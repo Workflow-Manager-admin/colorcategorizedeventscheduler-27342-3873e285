@@ -612,6 +612,25 @@ export default function ColorCategorizedEventScheduler({ user, profile }) {
     }
   }, []);
 
+  // Display events using user profile's timezone (fall back to browser if unavailable)
+  const timezone = (profile && profile.timezone) || Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const calendarEvents = filteredEvents.map(ev => {
+    // Parse stored times as UTC, convert to user's TZ (for display)
+    let eventStart = ev.start ? moment(ev.start).tz(timezone).format("YYYY-MM-DDTHH:mm") : "";
+    let eventEnd = ev.end ? moment(ev.end).tz(timezone).format("YYYY-MM-DDTHH:mm") : "";
+    return {
+      ...ev,
+      start: eventStart ? eventStart : undefined,
+      end: eventEnd ? eventEnd : undefined,
+      backgroundColor: getCategoryColor(ev.category),
+      borderColor: getCategoryColor(ev.category),
+      extendedProps: {
+        ...ev,
+        category: ev.category
+      }
+    };
+  });
+
   return (
     <div style={{
       minHeight: "100vh",
@@ -657,6 +676,7 @@ export default function ColorCategorizedEventScheduler({ user, profile }) {
               });
               setDialogOpen(true);
             }}
+            disabled={loading || savingEvent}
           >
             + Add Task
           </button>
@@ -691,17 +711,7 @@ export default function ColorCategorizedEventScheduler({ user, profile }) {
           dayMaxEvents={3}
           nowIndicator
           height="auto"
-          events={filteredEvents.map(ev => ({
-            ...ev,
-            // Assign color for extra FC views (e.g., dot in week view)
-            backgroundColor: getCategoryColor(ev.category),
-            borderColor: getCategoryColor(ev.category),
-            // Append category for custom rendering
-            extendedProps: {
-              ...ev,
-              category: ev.category
-            }
-          }))}
+          events={calendarEvents}
           eventContent={renderEventContent}
           select={openCreateDialog}
           eventClick={openEditDialog}
@@ -729,6 +739,31 @@ export default function ColorCategorizedEventScheduler({ user, profile }) {
       }}>
         Powered by&nbsp;<a href="https://fullcalendar.io/" target="_blank" rel="noopener noreferrer" style={{ color: '#31d3b8', textDecoration: 'none' }}>FullCalendar</a>
       </div>
+      {(loading || savingEvent) && (
+        <div style={{
+          position: "fixed",
+          left: 0,
+          top: 0,
+          width: "100vw",
+          height: "100vh",
+          background: "rgba(22,22,25,0.60)",
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}>
+          <div style={{
+            background: "#222428",
+            color: "#fff",
+            padding: "18px 34px",
+            borderRadius: 13,
+            fontSize: 19,
+            fontWeight: 600
+          }}>
+            Syncing events...
+          </div>
+        </div>
+      )}
     </div>
   );
 }
