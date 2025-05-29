@@ -424,21 +424,12 @@ export default function ColorCategorizedEventScheduler() {
     }
   }
 
-  // Calendar event content renderer (colors + title + tooltip on truncation)
+  // Calendar event content renderer (colors + title tooltip via HTML attribute)
   function renderEventContent(eventInfo) {
     const color = getCategoryColor(eventInfo.event.extendedProps.category);
     const title = eventInfo.event.title;
-    // We'll use a span ref to check if the text is truncated to conditionally show the tooltip
-    const textRef = React.useRef(null);
-    const [isTruncated, setIsTruncated] = React.useState(false);
 
-    React.useEffect(() => {
-      // Detect truncation (clientWidth < scrollWidth means ellipsis has happened)
-      if (textRef.current) {
-        setIsTruncated(textRef.current.scrollWidth > textRef.current.clientWidth);
-      }
-    }, [title]);
-
+    // Use simple HTML title for built-in tooltip on hover, and always style with ellipsis
     return (
       <div
         style={{
@@ -457,16 +448,13 @@ export default function ColorCategorizedEventScheduler() {
           overflow: 'hidden',
           boxSizing: 'border-box',
         }}
-        // Use HTML title as fallback (native tooltip, always visible, but limited styling)
         title={title}
       >
         <span style={{
           display: "inline-block", width: 8, height: 8, borderRadius: "50%",
           background: color, flexShrink: 0
         }} />
-        {/* The span below will visually truncate and show ellipsis, and the container div provides title */}
         <span
-          ref={textRef}
           style={{
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -475,11 +463,8 @@ export default function ColorCategorizedEventScheduler() {
             wordBreak: "break-word",
             lineHeight: 1.18,
             display: "inline-block",
-            verticalAlign: 'middle',
-            cursor: isTruncated ? 'pointer' : 'default'
+            verticalAlign: 'middle'
           }}
-          // Optionally, for accessibility, show aria-label with full text if truncated
-          aria-label={isTruncated ? title : undefined}
         >
           {title}
         </span>
