@@ -31,10 +31,15 @@
 .fc-daygrid-event-dot {
   border-color: #fff !important;
 }
+/* 
+ * Ensure event background, shadows, and highlights are strictly contained.
+ * These overrides will restrict any colored backgrounds or highlights from 
+ * bleeding outside the calendar cell, including for custom rendered "Deadline" events.
+ */
 .fc-event {
   background: transparent !important;
   border: none !important;
-  box-shadow: none;
+  box-shadow: none !important;
   overflow: hidden !important;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -42,6 +47,8 @@
   min-width: 0;
   padding: 0;
 }
+
+/* Prevent colored backgrounds or any highlight from overflowing date cells */
 .fc-daygrid-event, .fc-timegrid-event {
   border-radius: 5px !important;
   margin-bottom: 2px;
@@ -51,7 +58,43 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1.25;
+  box-shadow: none !important;
+  /* Remove outline or glow on focus for accessibility, only if safe: */
+  outline: none !important;
+  /* Force event wrapper to respect cell bounds */
+  position: relative;
+  z-index: 2;
 }
+
+/* Ensure event container does not stretch beyond its cell (esp. in month view): */
+.fc-daygrid-day-events, .fc-timegrid-event-harness, .fc-daygrid-event-harness {
+  overflow: hidden !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Prevent background bleed for "Deadline" (red events/content), even if using rgba */
+.fc .fc-daygrid-day-frame, 
+.fc .fc-daygrid-day {
+  overflow: hidden !important;
+  position: relative;
+}
+
+.fc .fc-daygrid-event-dot {
+  box-shadow: none !important;
+}
+
+/* Remove box-shadow or effects that could extend beyond event */
+.fc-daygrid-event-dot, .fc-event-title, .fc-event-main {
+  box-shadow: none !important;
+}
+
+/* If outline appears on focus, contain it strictly */
+.fc-daygrid-event:focus, .fc-event:focus {
+  outline: 2px solid #e53935;
+  outline-offset: -2px;
+}
+
 .fc-highlight {
   background: #1a5e8a33;
 }
