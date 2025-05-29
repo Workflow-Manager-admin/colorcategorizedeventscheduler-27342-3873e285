@@ -19,3 +19,54 @@ To create a production build, use npm run build.
 
 webpack compiled successfully
 Compiling...
+Failed to compile.
+
+Module not found: Error: Can't resolve '@fullcalendar/react' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+ERROR in ./src/ColorCategorizedEventScheduler.js 9:0-47
+Module not found: Error: Can't resolve '@fullcalendar/react' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 10:0-50
+Module not found: Error: Can't resolve '@fullcalendar/daygrid' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 11:0-52
+Module not found: Error: Can't resolve '@fullcalendar/timegrid' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 12:0-58
+Module not found: Error: Can't resolve '@fullcalendar/interaction' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 14:0-37
+Module not found: Error: Can't resolve '@fullcalendar/core/main.css' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 15:0-40
+Module not found: Error: Can't resolve '@fullcalendar/daygrid/main.css' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 16:0-41
+Module not found: Error: Can't resolve '@fullcalendar/timegrid/main.css' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+webpack compiled with 7 errors
+Compiling...
+Failed to compile.
+
+Module not found: Error: Can't resolve '@fullcalendar/react' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+ERROR in ./src/ColorCategorizedEventScheduler.js 9:0-47
+Module not found: Error: Can't resolve '@fullcalendar/react' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 10:0-50
+Module not found: Error: Can't resolve '@fullcalendar/daygrid' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 11:0-52
+Module not found: Error: Can't resolve '@fullcalendar/timegrid' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 12:0-58
+Module not found: Error: Can't resolve '@fullcalendar/interaction' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 14:0-37
+Module not found: Error: Can't resolve '@fullcalendar/core/main.css' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 15:0-40
+Module not found: Error: Can't resolve '@fullcalendar/daygrid/main.css' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+ERROR in ./src/ColorCategorizedEventScheduler.js 16:0-41
+Module not found: Error: Can't resolve '@fullcalendar/timegrid/main.css' in '/home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/src'
+
+webpack compiled with 7 errors
