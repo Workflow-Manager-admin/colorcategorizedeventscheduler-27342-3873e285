@@ -206,3 +206,4 @@ ERROR in ./src/ColorCategorizedEventScheduler.js 15:0-42
 Module not found: Error: Package path ./index.css is not exported from package /home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/node_modules/@fullcalendar/timegrid (see exports field in /home/kavia/workspace/code-generation/colorcategorizedeventscheduler-27342-3873e285/color_categorized_event_scheduler/node_modules/@fullcalendar/timegrid/package.json)
 
 webpack compiled with 2 errors
+Compiling...
