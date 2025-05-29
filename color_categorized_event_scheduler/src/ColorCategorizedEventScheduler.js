@@ -85,26 +85,66 @@ function CategoryFilter({ activeCategories, setActiveCategories }) {
   );
 }
 
-// -- Event Dialog component: Used for both create/edit --
+/**
+ * PUBLIC_INTERFACE
+ * EventDialog: Modal Form for Creating/Editing Events/Tasks.
+ * Enhanced: When opened from "+ Add Task", lets user select date, month, type, category via checkboxes.
+ */
 function EventDialog({ open, mode, eventData, onSave, onClose }) {
-  // eventData: { title, start, end, category }
-  // PUBLIC_INTERFACE
+  // Internal state management
   const [title, setTitle] = useState(eventData?.title || "");
-  const [start, setStart] = useState(eventData?.start?.slice(0, 16) || ""); // "YYYY-MM-DDTHH:mm"
-  const [end, setEnd] = useState(eventData?.end?.slice(0, 16) || "");
+  const [date, setDate] = useState(""); // Used only for Add Task modal
+  const [categoryChecks, setCategoryChecks] = useState(
+    (eventData?.category
+      ? CATEGORY_CONFIG.map((cat) => eventData.category === cat.id)
+      : CATEGORY_CONFIG.map((_, i) => i === 0))
+  );
   const [category, setCategory] = useState(eventData?.category || CATEGORY_CONFIG[0].id);
 
-  // Reset dialog state when opened
+  const [start, setStart] = useState(eventData?.start?.slice(0, 16) || ""); // for calendar dialog
+  const [end, setEnd] = useState(eventData?.end?.slice(0, 16) || "");
+
+  // Reset dialog state when opened/new entry
   React.useEffect(() => {
     if (open) {
       setTitle(eventData?.title || "");
       setStart(eventData?.start?.slice(0, 16) || "");
       setEnd(eventData?.end?.slice(0, 16) || "");
       setCategory(eventData?.category || CATEGORY_CONFIG[0].id);
+      setCategoryChecks(
+        (eventData?.category
+          ? CATEGORY_CONFIG.map((cat) => eventData.category === cat.id)
+          : CATEGORY_CONFIG.map((_, i) => i === 0))
+      );
+      setDate(""); // By default empty, unless user chooses
     }
   }, [eventData, open]);
 
-  function handleSubmit(e) {
+  // Handler for "new task" checkboxes - only one allowed
+  function handleCategoryCheckbox(idx) {
+    // One checked at a time
+    setCategoryChecks(CATEGORY_CONFIG.map((_, i) => i === idx));
+    setCategory(CATEGORY_CONFIG[idx].id);
+  }
+
+  // Handle add task (from button, not from click on the calendar)
+  function handleAddTaskSubmit(e) {
+    e.preventDefault();
+    if (!title.trim() || !date.trim()) return;
+    // Construct ISO datetime for "start" at 09:00 as default
+    const chosenCategory = CATEGORY_CONFIG[categoryChecks.findIndex((x) => x)]?.id || CATEGORY_CONFIG[0].id;
+    const isoStart = date.length === 10 ? date + "T09:00" : date;
+    onSave({
+      ...eventData,
+      title,
+      start: isoStart,
+      end: "",
+      category: chosenCategory,
+    });
+  }
+
+  // For legacy calendar clicks, use time selector
+  function handleCalendarDialogSubmit(e) {
     e.preventDefault();
     if (!title.trim() || !start) return;
     onSave({
@@ -118,6 +158,9 @@ function EventDialog({ open, mode, eventData, onSave, onClose }) {
 
   if (!open) return null;
 
+  // Determine if opened from "+ Add Task" button
+  const isAddTaskModal = !eventData?.start && mode === "create";
+
   return (
     <div
       role="dialog"
@@ -130,7 +173,7 @@ function EventDialog({ open, mode, eventData, onSave, onClose }) {
     >
       <form
         onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit}
+        onSubmit={isAddTaskModal ? handleAddTaskSubmit : handleCalendarDialogSubmit}
         style={{
           minWidth: 320,
           background: 'linear-gradient(145deg,#23272E,#212124)',
@@ -141,20 +184,22 @@ function EventDialog({ open, mode, eventData, onSave, onClose }) {
           display: 'flex',
           flexDirection: 'column',
           gap: 14,
-          border: `2px solid ${getCategoryColor(category)}`
+          border: `2.2px solid ${getCategoryColor(category)}`
         }}
       >
         <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 7 }}>
-          {mode === 'edit' ? 'Edit Event' : 'Create Event'}
+          {mode === 'edit' ? 'Edit Event' : (isAddTaskModal ? "Add New Task" : "Create Event")}
         </div>
+        {/* Description/Task Entry */}
         <label style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <span style={{ fontSize: 13, marginBottom: 2 }}>Title <span style={{color:"#e87a41"}}>*</span></span>
+          <span style={{ fontSize: 13, marginBottom: 2 }}>Task <span style={{color:"#e87a41"}}>*</span></span>
           <input
             required
             autoFocus
             type="text"
             value={title}
             maxLength={64}
+            placeholder="Enter task/description"
             onChange={e => setTitle(e.target.value)}
             style={{
               padding: '7.5px 10px', border: '1px solid #656575',
@@ -162,48 +207,88 @@ function EventDialog({ open, mode, eventData, onSave, onClose }) {
             }}
           />
         </label>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{fontSize:13}}>Start <span style={{color:"#e87a41"}}>*</span></span>
+        {/* Date field for Add Task; datetime-local for calendar modal */}
+        {isAddTaskModal ? (
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <span style={{ fontSize: 13 }}>Date <span style={{color:"#e87a41"}}>*</span></span>
             <input
               required
-              type="datetime-local"
-              value={start}
-              onChange={e => setStart(e.target.value)}
+              type="date"
+              value={date}
+              onChange={e => setDate(e.target.value)}
               style={{
-                padding: '6.5px 9px', border: '1px solid #656575',
+                padding: '7.5px 9px', border: '1px solid #656575',
                 borderRadius: 4, background: '#252634', color: 'white', outline: 'none'
               }}
             />
           </label>
-          <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <span style={{fontSize:13}}>End</span>
-            <input
-              type="datetime-local"
-              value={end}
-              onChange={e => setEnd(e.target.value)}
-              style={{
-                padding: '6.5px 9px', border: '1px solid #656575',
-                borderRadius: 4, background: '#252634', color: 'white', outline: 'none'
-              }}
-            />
-          </label>
-        </div>
-        <label style={{ display: 'flex', flexDirection: 'column', gap:2, marginTop:2 }}>
+        ) : (
+          <div style={{ display: 'flex', gap: 8 }}>
+            <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span style={{fontSize:13}}>Start <span style={{color:"#e87a41"}}>*</span></span>
+              <input
+                required
+                type="datetime-local"
+                value={start}
+                onChange={e => setStart(e.target.value)}
+                style={{
+                  padding: '6.5px 9px', border: '1px solid #656575',
+                  borderRadius: 4, background: '#252634', color: 'white', outline: 'none'
+                }}
+              />
+            </label>
+            <label style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <span style={{fontSize:13}}>End</span>
+              <input
+                type="datetime-local"
+                value={end}
+                onChange={e => setEnd(e.target.value)}
+                style={{
+                  padding: '6.5px 9px', border: '1px solid #656575',
+                  borderRadius: 4, background: '#252634', color: 'white', outline: 'none'
+                }}
+              />
+            </label>
+          </div>
+        )}
+        {/* Category Selection (Checkbox for Add Task, select for legacy) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 2 }}>
           <span style={{ fontSize: 13 }}>Category</span>
-          <select
-            value={category}
-            onChange={e => setCategory(e.target.value)}
-            style={{
-              padding: '8px', border: '1px solid #656575',
-              borderRadius: 4, background: '#252634', color: 'white', outline: 'none'
-            }}
-          >
-            {CATEGORY_CONFIG.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </select>
-        </label>
+          {isAddTaskModal ? (
+            <div style={{ display: "flex", gap: 16, marginTop: 2 }}>
+              {CATEGORY_CONFIG.map((cat, i) => (
+                <label key={cat.id} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', color: '#eee', fontWeight: 500, fontSize: '0.99em' }}>
+                  <input
+                    type="checkbox"
+                    checked={categoryChecks[i]}
+                    onChange={() => handleCategoryCheckbox(i)}
+                    style={{
+                      accentColor: cat.color,
+                      marginRight: 3,
+                      width: 16,
+                      height: 16,
+                      borderRadius: 3,
+                    }}
+                  />
+                  <span style={{ color: categoryChecks[i] ? cat.color : "#bbb" }}>{cat.name}</span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <select
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              style={{
+                padding: '8px', border: '1px solid #656575',
+                borderRadius: 4, background: '#252634', color: 'white', outline: 'none'
+              }}
+            >
+              {CATEGORY_CONFIG.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          )}
+        </div>
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 6}}>
           {mode === 'edit' && (
             <button type="button" style={{
