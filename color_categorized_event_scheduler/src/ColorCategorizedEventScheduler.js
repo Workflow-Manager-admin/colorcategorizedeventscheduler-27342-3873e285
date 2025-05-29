@@ -5,6 +5,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import "./fullcalendar-dark-overrides.css";
 // Style imports
 
 
@@ -440,6 +441,10 @@ export default function ColorCategorizedEventScheduler() {
           display: 'flex',
           alignItems: 'center',
           gap: 7,
+          minHeight: 28,
+          maxHeight: 38,
+          overflow: 'hidden',
+          boxSizing: 'border-box',
         }}
         title={eventInfo.event.title}
       >
@@ -447,7 +452,17 @@ export default function ColorCategorizedEventScheduler() {
           display: "inline-block", width: 8, height: 8, borderRadius: "50%",
           background: color, flexShrink: 0
         }} />
-        <span>
+        <span
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            maxWidth: "120px",
+            wordBreak: "break-word",
+            lineHeight: 1.18,
+            display: "inline-block"
+          }}
+        >
           {eventInfo.event.title}
         </span>
       </div>

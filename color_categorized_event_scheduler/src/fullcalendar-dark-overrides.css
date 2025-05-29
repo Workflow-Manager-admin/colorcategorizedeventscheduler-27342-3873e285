@@ -35,10 +35,22 @@
   background: transparent !important;
   border: none !important;
   box-shadow: none;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
 }
 .fc-daygrid-event, .fc-timegrid-event {
   border-radius: 5px !important;
   margin-bottom: 2px;
+  overflow: hidden !important;
+  min-width: 0 !important;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.25;
 }
 .fc-highlight {
   background: #1a5e8a33;
