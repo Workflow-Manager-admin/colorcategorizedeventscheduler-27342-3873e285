@@ -8,7 +8,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import "./fullcalendar-dark-overrides.css";
 // Style imports
 
-
 // -- Category configuration --
 const CATEGORY_CONFIG = [
   {
@@ -473,9 +472,7 @@ export default function ColorCategorizedEventScheduler() {
 
     // Handler to show tooltip at mouse position with full text
     function handleMouseEnter(e) {
-      // Position: leave some offset so it doesn't occlude cursor
       const rect = e.target.getBoundingClientRect();
-      // "e" may be reused, so use clientX, clientY for best accuracy, else rect.
       setTooltip({
         visible: true,
         text: title,
@@ -489,29 +486,9 @@ export default function ColorCategorizedEventScheduler() {
       setTooltip(t => t.visible ? { ...t, visible: false } : t);
     }
 
-    // Always style with ellipsis - tooltip on custom hover (no title attr!)
+    // Strict containment for the event color box
     return (
       <div
-        style={{
-          background: color + '33',
-          borderLeft: '4px solid ' + color,
-          padding: "3px 6px 3.5px 7px",
-          borderRadius: 5,
-          color: '#fff',
-          fontWeight: 500,
-          fontSize: '1em',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 7,
-          minHeight: 28,
-          maxHeight: 38,
-          overflow: 'hidden',
-          boxSizing: 'border-box',
-        }}
-        onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        tabIndex={-1}
         style={{
           background: color + '33',
           borderLeft: '4px solid ' + color,
@@ -528,8 +505,16 @@ export default function ColorCategorizedEventScheduler() {
           boxSizing: 'border-box',
           cursor: "pointer",
           overflow: 'hidden',
-          userSelect: 'none'
+          userSelect: 'none',
+          boxShadow: 'none',
+          position: 'relative',
+          zIndex: 3,
+          outline: 'none',
         }}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        tabIndex={-1}
         aria-label={title}
       >
         <span style={{
@@ -556,7 +541,6 @@ export default function ColorCategorizedEventScheduler() {
 
   // Calendar styling override (dark mode + accent)
   React.useEffect(() => {
-    // Insert custom dark styles for FullCalendar when component mounts
     const styleId = "colorcat-fc-dark";
     if (!document.getElementById(styleId)) {
       const style = document.createElement("style");
