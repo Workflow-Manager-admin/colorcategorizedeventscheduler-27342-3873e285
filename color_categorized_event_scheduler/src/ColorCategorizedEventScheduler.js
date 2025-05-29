@@ -24,7 +24,7 @@ const CATEGORY_CONFIG = [
   {
     id: 'deadline',
     name: 'Deadline',
-    color: '#31d3b8', // accent
+    color: '#e53935', // CHANGED: Red shade for 'Deadline'
   },
 ];
 
@@ -329,6 +329,34 @@ function EventDialog({ open, mode, eventData, onSave, onClose }) {
   );
 }
 
+/** Custom tooltip for event hover */
+function EventTooltip({ text, position, visible }) {
+  if (!visible) return null;
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        left: position.x,
+        top: position.y,
+        zIndex: 99999,
+        background: '#24272e',
+        color: 'white',
+        fontSize: 15,
+        borderRadius: 7,
+        padding: '8px 14px',
+        boxShadow: '0 2px 12px #000c',
+        pointerEvents: 'none',
+        whiteSpace: 'pre-wrap',
+        maxWidth: 360,
+        border: '2.5px solid #e87a41',
+        fontWeight: 500,
+      }}
+    >
+      {text}
+    </div>
+  );
+}
+
 // -- Main Component: ColorCategorizedEventScheduler --
 export default function ColorCategorizedEventScheduler() {
   // State storage for events: [{ id, title, start, end, category }]
@@ -368,6 +396,20 @@ export default function ColorCategorizedEventScheduler() {
   const [dialogEventData, setDialogEventData] = useState(null);
 
   const calendarRef = useRef();
+
+  // Tooltip state: stores visibility, position, and content
+  const [tooltip, setTooltip] = useState({ visible: false, text: '', position: { x: 0, y: 0 } });
+
+  // Hide tooltip on scroll or leave
+  React.useEffect(() => {
+    const hideTooltip = () => setTooltip(t => t.visible ? { ...t, visible: false } : t);
+    window.addEventListener('scroll', hideTooltip, true);
+    window.addEventListener('resize', hideTooltip, true);
+    return () => {
+      window.removeEventListener('scroll', hideTooltip, true);
+      window.removeEventListener('resize', hideTooltip, true);
+    };
+  }, []);
 
   // Handle event filtering
   const filteredEvents = events.filter(ev => activeCategories.includes(ev.category));
