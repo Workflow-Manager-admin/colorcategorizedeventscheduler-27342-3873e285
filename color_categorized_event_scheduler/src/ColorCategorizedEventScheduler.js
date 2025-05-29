@@ -360,48 +360,40 @@ function EventTooltip({ text, position, visible }) {
   );
 }
 
-// -- Main Component: ColorCategorizedEventScheduler --
-export default function ColorCategorizedEventScheduler() {
+/**
+ * PUBLIC_INTERFACE
+ * Multi-user aware scheduler, requires props: user (user object), profile (profile object).
+ */
+export default function ColorCategorizedEventScheduler({ user, profile }) {
   // State storage for events: [{ id, title, start, end, category }]
-  const [events, setEvents] = useState([
-    // Example starter events (can be empty)
-    {
-      id: "sample1",
-      title: "Project Meeting",
-      start: new Date().toISOString().slice(0, 10) + "T10:00",
-      end: new Date().toISOString().slice(0, 10) + "T11:00",
-      category: "work",
-    },
-    {
-      id: "sample2",
-      title: "Dentist Appointment",
-      start: new Date().toISOString().slice(0, 10) + "T15:30",
-      end: new Date().toISOString().slice(0, 10) + "T16:00",
-      category: "personal",
-    },
-    {
-      id: "sample3",
-      title: "Submission Deadline",
-      start: new Date(Date.now() + 86400000).toISOString().slice(0, 10) + "T23:59",
-      end: "",
-      category: "deadline",
-    }
-  ]);
-
+  const [events, setEvents] = useState([]);
   // Stores currently visible categories
   const [activeCategories, setActiveCategories] = useState(
     () => CATEGORY_CONFIG.map(c => c.id)
   );
-
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState('create'); // 'create' | 'edit'
   const [dialogEventData, setDialogEventData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [savingEvent, setSavingEvent] = useState(false);
 
   const calendarRef = useRef();
 
   // Tooltip state: stores visibility, position, and content
   const [tooltip, setTooltip] = useState({ visible: false, text: '', position: { x: 0, y: 0 } });
+
+  // Fetch events for logged-in user
+  useEffect(() => {
+    if (!user?.uid) return;
+    setLoading(true);
+    fetchEventsForUser(user.uid)
+      .then(evts => {
+        setEvents(evts);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [user?.uid]);
 
   // Hide tooltip on scroll or leave
   React.useEffect(() => {
@@ -414,7 +406,7 @@ export default function ColorCategorizedEventScheduler() {
     };
   }, []);
 
-  // Handle event filtering
+  // Handle event filtering by category
   const filteredEvents = events.filter(ev => activeCategories.includes(ev.category));
 
   // -- Dialog handlers --
@@ -435,38 +427,54 @@ export default function ColorCategorizedEventScheduler() {
       id: eventInfo.event.id,
       title: eventInfo.event.title,
       start: eventInfo.event.start
-        ? eventInfo.event.start.toISOString().slice(0, 16) : "",
+        ? moment(eventInfo.event.start).format("YYYY-MM-DDTHH:mm") : "",
       end: eventInfo.event.end
-        ? eventInfo.event.end.toISOString().slice(0, 16) : "",
+        ? moment(eventInfo.event.end).format("YYYY-MM-DDTHH:mm") : "",
       category: eventInfo.event.extendedProps.category || CATEGORY_CONFIG[0].id,
     });
     setDialogOpen(true);
   }
 
-  function handleDialogSave(data) {
+  async function handleDialogSave(data) {
     setDialogOpen(false);
     // Handle Delete flow
-    if (data?._delete) {
-      setEvents((prev) => prev.filter((ev) => ev.id !== data.id));
+    if (data?._delete && data.id) {
+      setSavingEvent(true);
+      await deleteUserEvent(user.uid, data.id);
+      setEvents(prev => prev.filter(ev => ev.id !== data.id));
+      setSavingEvent(false);
       return;
     }
+    setSavingEvent(true);
+    // Adjust time to user's selected timezone => UTC string for storage
+    let eventForSave = { ...data };
+    const tz = (profile && profile.timezone) || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (eventForSave.start) {
+      eventForSave.start = moment.tz(eventForSave.start, tz).toISOString();
+    }
+    if (eventForSave.end) {
+      eventForSave.end = eventForSave.end
+        ? moment.tz(eventForSave.end, tz).toISOString() : "";
+    }
+    // Save event, update local state
+    let eventId = data.id;
     if (dialogMode === 'create') {
-      setEvents((prevEvents) => [
+      eventId = await saveUserEvent(user.uid, eventForSave);
+      setEvents(prevEvents => [
         ...prevEvents,
-        {
-          ...data,
-          id: 'event_' + Math.random().toString(36).substr(2, 8),
-        }
+        { ...eventForSave, id: eventId }
       ]);
-    } else if (dialogMode === 'edit') {
-      setEvents((prevEvents) =>
+    } else if (dialogMode === 'edit' && data.id) {
+      await saveUserEvent(user.uid, { ...eventForSave, id: data.id });
+      setEvents(prevEvents =>
         prevEvents.map(ev =>
           ev.id === data.id
-            ? { ...ev, ...data }
+            ? { ...ev, ...eventForSave }
             : ev
         )
       );
     }
+    setSavingEvent(false);
   }
 
   // Calendar event content renderer (colors + title tooltip via HTML attribute)
