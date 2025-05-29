@@ -1,12 +1,16 @@
-import React, { useState, useRef } from 'react';
-// PUBLIC_INTERFACE
-// FullCalendar and plugins imports
+import React, { useState, useRef, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import moment from 'moment-timezone';
 import "./fullcalendar-dark-overrides.css";
-// Style imports
+import {
+  fetchEventsForUser,
+  saveUserEvent,
+  deleteUserEvent,
+  getOrCreateUserProfile
+} from './firebase';
 
 // -- Category configuration --
 const CATEGORY_CONFIG = [
