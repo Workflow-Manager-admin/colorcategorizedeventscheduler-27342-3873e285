@@ -6,9 +6,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 // Style imports
-import '@fullcalendar/core/main.css';
-import '@fullcalendar/daygrid/main.css';
-import '@fullcalendar/timegrid/main.css';
+import '@fullcalendar/daygrid/index.css';
+import '@fullcalendar/timegrid/index.css';
 
 // -- Category configuration --
 const CATEGORY_CONFIG = [
