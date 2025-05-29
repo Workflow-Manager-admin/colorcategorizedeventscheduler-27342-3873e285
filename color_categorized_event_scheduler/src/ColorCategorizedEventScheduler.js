@@ -165,6 +165,7 @@ function EventDialog({ open, mode, eventData, onSave, onClose }) {
     <div
       role="dialog"
       aria-modal="true"
+      key={open ? (mode + (eventData?.id || "")) : undefined}
       style={{
         position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh',
         zIndex: 9999, background: 'rgba(32,32,36,0.80)', display: 'flex', alignItems: 'center', justifyContent: 'center'
