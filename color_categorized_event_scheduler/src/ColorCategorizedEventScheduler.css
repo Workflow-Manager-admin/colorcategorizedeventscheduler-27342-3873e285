@@ -1,0 +1,224 @@
+.color-categorized-event-scheduler {
+  background: #181c22;
+  color: #fff;
+  min-height: 100vh;
+  padding: 36px 0 0 0;
+  font-family: 'Inter', 'Roboto', Arial, sans-serif;
+}
+
+/* Header section: Filters and Legend */
+.cces-header {
+  max-width: 900px;
+  margin: 32px auto 0 auto;
+  padding: 18px 24px 12px 24px;
+  background: #23272b;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 3px 16px 0 rgba(0,0,0,0.2);
+  display: flex;
+  gap: 28px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.cces-filters,
+.cces-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1rem;
+}
+
+.cces-filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cces-filter-label input[type="checkbox"] {
+  accent-color: #39898e;
+}
+
+.cces-color-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  border: 2px solid #222;
+}
+
+.cces-legend {
+  gap: 24px;
+  font-size: 0.98rem;
+}
+
+.cces-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cces-add-btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-left: 18px;
+  box-shadow: 0 2px 5px 0 rgba(40, 70, 100, 0.09);
+}
+.cces-add-btn:hover {
+  background: #2e8cfc;
+}
+
+/* Calendar wrap */
+.cces-calendar-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #23272b;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 5px 16px 0 rgba(0,0,0,0.13);
+  padding: 16px 12px 24px 12px;
+}
+
+/* Modal Dialog (centered) */
+.cces-modal-overlay {
+  position: fixed;
+  z-index: 1002;
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 0;
+  background: rgba(20,22,28,0.77);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cces-modal {
+  background: #23272b;
+  border-radius: 10px;
+  padding: 26px 30px 20px 30px;
+  color: #fff;
+  min-width: 340px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.cces-modal h2 {
+  margin-top: 0;
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+  color: #31d3b8;
+}
+
+.cces-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cces-modal-row {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+}
+
+.cces-modal-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cces-modal label {
+  font-size: 1rem;
+  color: #b4dcdf;
+}
+.cces-modal input,
+.cces-modal select {
+  font: inherit;
+  padding: 6px 9px;
+  background: #192630;
+  border: 1.5px solid #39898e;
+  border-radius: 4px;
+  color: #fff;
+  margin-bottom: 2px;
+  transition: border-color 0.15s;
+}
+.cces-modal input:focus,
+.cces-modal select:focus {
+  outline: none;
+  border-color: #31d3b8;
+}
+
+.cces-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 13px;
+  justify-content: flex-end;
+}
+
+.cces-save-btn {
+  background: #31d3b8;
+  color: #07281a;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  padding: 7px 22px;
+  cursor: pointer;
+}
+.cces-save-btn:hover {
+  background: #43efd6;
+}
+
+.cces-cancel-btn {
+  background: #23272b;
+  color: #eee;
+  border: 1px solid #39898e;
+  border-radius: 4px;
+  font-weight: 600;
+  padding: 7px 15px;
+  cursor: pointer;
+}
+.cces-cancel-btn:hover {
+  background: #2c2e33;
+}
+
+.cces-delete-btn {
+  background: #e87a41;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  padding: 7px 15px;
+  cursor: pointer;
+}
+.cces-delete-btn:hover {
+  background: #cf5735;
+}
+
+.event-content {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 650px) {
+  .cces-header, .cces-calendar-wrapper {
+    max-width: 99vw;
+    padding: 6vw 2vw;
+  }
+  .cces-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    border-radius: 10px 10px 0 0;
+  }
+}
