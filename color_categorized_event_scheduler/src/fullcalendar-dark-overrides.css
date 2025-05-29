@@ -1,0 +1,49 @@
+.fc {
+  background: #181c21;
+  color: #f3f3f3;
+  border-radius: 14px;
+  padding-bottom: 20px;
+  --fc-today-bg-color: #232B3B77;
+  --fc-border-color: #31333a;
+}
+.fc-toolbar.fc-header-toolbar {
+  background: #222428;
+  border-radius: 14px 14px 0 0;
+  margin-bottom: 8px;
+  padding: 13px 20px 7px 20px;
+  color: #eee;
+}
+.fc-button,
+.fc-button:active,
+.fc-button:focus {
+  background: #1A2535;
+  color: #fff;
+  border-color: #1976d2;
+  font-weight: 500;
+}
+.fc-button-primary:not(:disabled).fc-button-active,
+.fc-button-primary:not(:disabled):active, .fc-button-primary:focus {
+  background: #1976d2;
+}
+.fc-daygrid-day.fc-day-today {
+  background: #232b3764;
+}
+.fc-daygrid-event-dot {
+  border-color: #fff !important;
+}
+.fc-event {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none;
+}
+.fc-daygrid-event, .fc-timegrid-event {
+  border-radius: 5px !important;
+  margin-bottom: 2px;
+}
+.fc-highlight {
+  background: #1a5e8a33;
+}
+.fc-scrollgrid-section-header .fc-col-header-cell-cushion {
+  color: #87bdd8;
+  font-weight: 600;
+}
