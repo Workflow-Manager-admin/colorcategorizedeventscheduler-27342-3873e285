@@ -451,6 +451,33 @@ export default function ColorCategorizedEventScheduler() {
           <span style={{ fontWeight: 700, fontSize: 22, color: '#31d3b8', letterSpacing: 0.5 }}>
             Color-Categorized Event Scheduler
           </span>
+          <button
+            className="btn"
+            style={{
+              marginLeft: "auto",
+              padding: "9px 18px",
+              fontWeight: 600,
+              background: "#31d3b8",
+              color: "#fff",
+              fontSize: "1em",
+              borderRadius: 5,
+              cursor: "pointer",
+              border: "none",
+              boxShadow: "0 2px 6px #0002"
+            }}
+            onClick={() => {
+              setDialogMode("create");
+              setDialogEventData({
+                title: "",
+                start: "",
+                end: "",
+                category: CATEGORY_CONFIG[0].id
+              });
+              setDialogOpen(true);
+            }}
+          >
+            + Add Task
+          </button>
         </div>
         <CategoryFilter
           activeCategories={activeCategories}
