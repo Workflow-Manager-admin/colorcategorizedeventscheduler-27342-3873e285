@@ -471,7 +471,25 @@ export default function ColorCategorizedEventScheduler() {
     const color = getCategoryColor(eventInfo.event.extendedProps.category);
     const title = eventInfo.event.title;
 
-    // Use simple HTML title for built-in tooltip on hover, and always style with ellipsis
+    // Handler to show tooltip at mouse position with full text
+    function handleMouseEnter(e) {
+      // Position: leave some offset so it doesn't occlude cursor
+      const rect = e.target.getBoundingClientRect();
+      // "e" may be reused, so use clientX, clientY for best accuracy, else rect.
+      setTooltip({
+        visible: true,
+        text: title,
+        position: {
+          x: (e.clientX || (rect.left + 16)),
+          y: (e.clientY || (rect.top + rect.height + 8)),
+        }
+      });
+    }
+    function handleMouseLeave() {
+      setTooltip(t => t.visible ? { ...t, visible: false } : t);
+    }
+
+    // Always style with ellipsis - tooltip on custom hover (no title attr!)
     return (
       <div
         style={{
@@ -490,7 +508,29 @@ export default function ColorCategorizedEventScheduler() {
           overflow: 'hidden',
           boxSizing: 'border-box',
         }}
-        title={title}
+        onMouseEnter={handleMouseEnter}
+        onMouseMove={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        tabIndex={-1}
+        style={{
+          background: color + '33',
+          borderLeft: '4px solid ' + color,
+          padding: "3px 6px 3.5px 7px",
+          borderRadius: 5,
+          color: '#fff',
+          fontWeight: 500,
+          fontSize: '1em',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 7,
+          minHeight: 28,
+          maxHeight: 38,
+          boxSizing: 'border-box',
+          cursor: "pointer",
+          overflow: 'hidden',
+          userSelect: 'none'
+        }}
+        aria-label={title}
       >
         <span style={{
           display: "inline-block", width: 8, height: 8, borderRadius: "50%",
@@ -683,6 +723,8 @@ export default function ColorCategorizedEventScheduler() {
         onSave={handleDialogSave}
         onClose={() => setDialogOpen(false)}
       />
+      {/* Custom Tooltip always rendered so it floats above everything */}
+      <EventTooltip text={tooltip.text} position={tooltip.position} visible={tooltip.visible} />
       {/* Attribution (remove if unnecessary) */}
       <div style={{
         textAlign: 'center',
